@@ -29,7 +29,8 @@ REQUIRED_FEATURE_COLS = [
 @st.cache_resource
 def load_model():
     try:
-        model = joblib.load("final_ridge_model.pkl")
+        model_path = st.secrets.get("MODEL_PATH", "app/final_ridge_model.pkl")
+        model = joblib.load(model_path)
         return model
     except Exception as e:
         st.error(f"Не удалось загрузить модель из final_ridge_model.pkl: {e}")
@@ -38,10 +39,13 @@ def load_model():
 
 @st.cache_resource
 def load_train_df():
-    url = "https://raw.githubusercontent.com/Murcha1990/MLDS_ML_2022/main/Hometasks/HT1/cars_train.csv"
+    CSV_PATH = st.secrets.get(
+        "TRAIN_CSV",
+        "https://raw.githubusercontent.com/Murcha1990/MLDS_ML_2022/main/Hometasks/HT1/cars_train.csv"
+    )
 
     try:
-        df_train = pd.read_csv(url)
+        df_train = pd.read_csv(CSV_PATH)
     except Exception as e:
         st.error(f"Не удалось загрузить обучающий датасет по URL: {e}")
         st.stop()
